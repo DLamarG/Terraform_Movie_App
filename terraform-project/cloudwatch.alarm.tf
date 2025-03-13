@@ -16,6 +16,6 @@ resource "aws_cloudwatch_metric_alarm" "cpu_usage_alarm" {
   # Optional: Define actions when the alarm triggers
   alarm_actions = [
     # Example SNS topic ARN to notify when the alarm is triggered
-    "arn:aws:sns:us-east-2:536697237321:Lamar_Doge_Topic:d35e927c-deed-4b79-a342-355f9f8e170b"
+    "arn:aws:sns:us-east-2:536697237321:Lamar_Doge_Topic"
   ]
 }
