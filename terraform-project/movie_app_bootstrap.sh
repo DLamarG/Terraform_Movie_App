@@ -1,9 +1,29 @@
 #!/bin/bash
 
+
+
 # SECTION 1: Update OS and Install Prerequisites
 sudo yum update -y
-sudo yum install -y python3-pip docker git nodejs npm
+sudo yum install -y python3-pip docker git nodejs npm httpd
 pip install --upgrade pip
+
+
+# Set Permissions (Consider using 755 for better security)
+sudo chmod -R 755 /var/www/html
+
+# Create a Web Page Displaying Public IP
+echo "<html>
+<body>
+    <p>Public IP address of this instance is <b>$PUBLIC_IP</b></p>
+</body>
+</html>" | sudo tee /var/www/html/index.html > /dev/null
+
+# Update Apache Configuration to Listen on Port 8080
+sudo sed -i 's/^Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf
+
+# Start and Enable Apache
+sudo systemctl start httpd
+sudo systemctl enable httpd
 
 # Start Docker and enable it
 sudo systemctl start docker
@@ -19,10 +39,6 @@ sudo git clone https://github.com/DLamarG/Movie_App_CICD.git /home/ec2-user/Movi
 cd /home/ec2-user/Movie_App_CICD/do-assessment3-movie-db/templates/flask-react
 sudo chown -R ec2-user:ec2-user /home/ec2-user/Movie_App_CICD
 
-# Get the EC2 instance public IP
-TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-PUBLIC_IP=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4)
-echo "Public IP: $PUBLIC_IP"
 
 # Update App.jsx in the React app
 cd /home/ec2-user/Movie_App_CICD/do-assessment3-movie-db/templates/flask-react/nginx/reactApp/src
